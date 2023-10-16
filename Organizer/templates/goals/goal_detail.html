@@ -1,0 +1,180 @@
+{% extends 'share/base.html' %}
+{% block title %}
+Goals | {{ goal.title }}
+{% endblock %}
+
+{% comment %}
+<h2>Child Goals:</h2>
+<ul>
+  <p>
+    Add <a href="{% url 'create_goal' next_step_id %}">new Child Goal</a>
+  </p>
+  {% for child_goal in goal.children.all %}
+    <a href="{% url 'goal_detail' child_goal.id %}">{{ child_goal.title }}</a>
+  {% endfor %}
+</ul>
+
+<h2>Daily Tasks:</h2>
+<ul>
+  {% for daily_task in goal.dailytask_set.all %}
+    <li>{{ daily_task.title }}</li>
+  {% endfor %}
+</ul>
+
+ {% endcomment %}
+
+{% block content %}
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">{{ goal.title }}</h1>
+          <p>{{ goal.description }}</p>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item">
+              <a href="#">{{ goal.title }}</a>
+            </li> 
+            <li class="breadcrumb-item">
+              Goals List
+            </li>
+            <li class="breadcrumb-item active">Organizer v1</li>
+          </ol>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <!-- Default box -->
+        <div class="card col-12">
+          <div class="card-header">
+           <h3>  Sub Goals</h3>
+            <div class="card-tools">
+              <a class="btn btn-success" href="{% url 'create_goal' next_step_id %}">new child Goal</a>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove"><i class="fas fa-times"></i></button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-striped projects">
+              <thead>
+                <tr>
+                  <th style="width: 1%">#</th>
+                  <th style="width: 20%">Goal Name</th>
+                  <th>Goal Progress</th>
+                  <th style="width: 8%" class="text-center">Status</th>
+                  <th style="width: 20%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for goal in goal.children.all %}
+                  <tr>
+                    <td>#</td>
+                    <td>{{ goal.title }}</td>
+                    <td class="project_progress">
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100" style="width: 7%"></div>
+                      </div>
+                      <small>57% Complete</small>
+                    </td>
+                    <td class="project-state">
+                      <span class="badge badge-success">Success</span>
+                    </td>
+                    <td class="project-actions text-right">
+                      <a class="btn btn-primary btn-sm" href="{% url 'goal_detail' goal.id %}">
+                        <i class="fas fa-folder"></i>
+                        View
+                      </a>
+                      <a class="btn btn-info btn-sm" href="#">
+                        <i class="fas fa-pencil-alt"></i>
+                        Edit
+                      </a>
+                      <a class="btn btn-danger btn-sm" href="#">
+                        <i class="fas fa-trash"></i>
+                        Delete
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+         
+          <!-- /.card-body -->
+        </div>
+        <div class="card col-12">
+          <div class="card-header">
+            <h3> Daily Tasks </h3>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove"><i class="fas fa-times"></i></button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-striped projects">
+              <thead>
+                <tr>
+                  <th style="width: 1%">#</th>
+                  <th style="width: 20%">Goal Name</th>
+                  <th>Goal Progress</th>
+                  <th style="width: 8%" class="text-center">Status</th>
+                  <th style="width: 20%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for daily_task in goal.dailytask_set.all %}
+                  <tr>
+                    <td>#</td>
+                    <td>{{ daily_task.title }}</td>
+                    <td class="project_progress">
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100" style="width: 7%"></div>
+                      </div>
+                      <small>57% Complete</small>
+                    </td>
+                    <td class="project-state">
+                      <span class="badge badge-success">Success</span>
+                    </td>
+                    <td class="project-actions text-right">
+                      <a class="btn btn-primary btn-sm" href="#">
+                        <i class="fas fa-folder"></i>
+                        View
+                      </a>
+                      <a class="btn btn-info btn-sm" href="#">
+                        <i class="fas fa-pencil-alt"></i>
+                        Edit
+                      </a>
+                      <a class="btn btn-danger btn-sm" href="#">
+                        <i class="fas fa-trash"></i>
+                        Delete
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            Add <a href="#">new Task</a>
+          </p>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+{% endblock %}

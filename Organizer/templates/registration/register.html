@@ -1,0 +1,14 @@
+
+{% block content %}
+  <h2>Register</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.username.label_tag }} {{ form.username }}
+    {{ form.password1.label_tag }} {{ form.password1 }}
+    {{ form.password2.label_tag }} {{ form.password2 }}
+    <button type="submit">Register</button>
+  </form>
+
+  <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+</div>
+{% endblock %}

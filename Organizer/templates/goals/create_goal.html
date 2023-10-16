@@ -1,0 +1,105 @@
+{% extends 'share/base.html' %}
+{% block title %}
+  Goals | Create a new goal
+{% endblock %}
+
+{% block content %}
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Add new Goal</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item">
+              <a href="#">Home</a>
+            </li>
+            <li class="breadcrumb-item"><a href="{% url 'goal_list' %}">Goals</a></li>
+            <li class="breadcrumb-item active">Add new</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">General</h3>
+
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
+            </div>
+          </div>
+          <div class="card-body">
+            <form method="post" onsubmit="showSuccessToast();">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea name="description" id="description" required class="form-control" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="goal_type">Goal Type:</label>
+                <select name="goal_type" id="goal_type" class="form-control custom-select">
+                  {% for goal_type in goal_types %}
+                    <option value="{{ goal_type.id }}">{{ goal_type.title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="duration">Duration:</label>
+                <select name="duration" id="duration" class="form-control custom-select">
+                  {% for duration in goal_durations %}
+                    <option value="{{ duration.id }}">{{ duration.title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="parent_goal">Parent Goal (optional):</label>
+                <select name="parent_goal" id="parent_goal" class="form-control custom-select">
+                  <option value="">None</option>
+                  {% for goal in goals %}
+                    <option value="{{ goal.id }}">{{ goal.title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-success float-right">Create Goal</button>
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+        <div class="col-md-3"></div>
+      
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Function to show a success toast notification
+    function showSuccessToast() {
+        toastr.success('Goal saved successfully!', 'Success');
+                // Delay for 5 seconds (5000 milliseconds) before closing the toast
+        setTimeout(function() {
+              toastr.clear(); // Close the toast after 5 seconds
+        }, 5000);
+    }
+
+    // Ensure that the function is called when the form is submitted successfully
+    // You can call it within your form submission code.
+    // For example, in a JavaScript function that handles the form submission.
+</script>
+
+{% endblock %}
