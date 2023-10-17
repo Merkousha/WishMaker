@@ -1,38 +1,16 @@
 {% extends 'share/base.html' %}
+{% load static %}
+
 {% block title %}
 Goals | {{ goal.title }}
 {% endblock %}
 
-{% comment %}
-<h2>Child Goals:</h2>
-<ul>
-  <p>
-    Add <a href="{% url 'create_goal' next_step_id %}">new Child Goal</a>
-  </p>
-  {% for child_goal in goal.children.all %}
-    <a href="{% url 'goal_detail' child_goal.id %}">{{ child_goal.title }}</a>
-  {% endfor %}
-</ul>
-
-<h2>Daily Tasks:</h2>
-<ul>
-  {% for daily_task in goal.dailytask_set.all %}
-    <li>{{ daily_task.title }}</li>
-  {% endfor %}
-</ul>
-
- {% endcomment %}
-
 {% block content %}
+<!-- Bootstrap Switch -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">{{ goal.title }}</h1>
-          <p>{{ goal.description }}</p>
-        </div>
-        <!-- /.col -->
-        <div class="col-sm-6">
+        <div class="col-sm-12">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item">
               <a href="#">{{ goal.title }}</a>
@@ -43,7 +21,48 @@ Goals | {{ goal.title }}
             <li class="breadcrumb-item active">Organizer v1</li>
           </ol>
         </div>
+          <div class="col-sm-3"> </div>
+          <div class=" col-sm-6">
+            <!-- Add the bg color to the header using any of the bg-* classes -->
+            <div class="widget-user-header bg-info">
+              <h3 class="widget-user-username">{{ goal.title }}</h3>
+              <h5 class="widget-user-desc">{{ goal.description }}</h5>
+              
+            </div>
+            
+            <div class="card-footer">
+              <div class="row">
+                <div class="col-sm-4 border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">Duration</h5>
+                    <span class="description-text">{{ goal.duration }}</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">Goal Type</h5>
+                    <span class="description-text">{{goal.goal_type}}</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4">
+                  <div class="description-block">
+                    <h5 class="description-header">Is Complete</h5>
+                    <input type="checkbox" name="mySwitch" id="mySwitch" data-toggle="switch" data-on="Enabled" data-off="Disabled" data-on-text="Yes" data-off-text="No" data-size="small" {% if goal.is_complete %}checked{% endif %} data-goal-id="{{ goal.id }}">
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+          </div>
+          <div class="col-sm-3"> </div>
         <!-- /.col -->
+       
       </div>
       <!-- /.row -->
     </div>
@@ -55,6 +74,7 @@ Goals | {{ goal.title }}
     <div class="container-fluid">
       <!-- Small boxes (Stat box) -->
       <div class="row">
+        {% if goal.duration.id != 7%}
         <!-- Default box -->
         <div class="card col-12">
           <div class="card-header">
@@ -72,26 +92,44 @@ Goals | {{ goal.title }}
                   <th style="width: 1%">#</th>
                   <th style="width: 20%">Goal Name</th>
                   <th>Goal Progress</th>
+                  <th style="width: 8%" class="text-center">Duration</th>
+                  <th style="width: 8%" class="text-center">Goal Type</th>
+                  <th style="width: 8%" class="text-center">Sub Goals</th>
                   <th style="width: 8%" class="text-center">Status</th>
                   <th style="width: 20%"></th>
                 </tr>
               </thead>
               <tbody>
-                {% for goal in goal.children.all %}
+                {% for child in children %}
                   <tr>
                     <td>#</td>
-                    <td>{{ goal.title }}</td>
+                    <td>{{ child.title }}</td>
                     <td class="project_progress">
                       <div class="progress progress-sm">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100" style="width: 7%"></div>
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="{{ child.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{ child.progress}}%"></div>
                       </div>
-                      <small>57% Complete</small>
+                      <small>{{ child.progress }}% Complete</small>
                     </td>
                     <td class="project-state">
-                      <span class="badge badge-success">Success</span>
+                      <span class="badge">{{child.duration.title}}</span>
+                    </td>
+                    <td class="project-state">
+                      <span class="badge">{{child.goal_type.title}}</span>
+                    </td>
+                    <td class="project-state">
+                      <span class="badge">{{child.num_child_goals}}</span>
+                    </td>
+                    <td class="project-state">
+                      {% if child.is_complete == True %}
+                      <span class="badge badge-success">Complete</span>
+                      {% elif child.num_child_goals == 0  %}
+                      <span class="badge badge-danger">Not Origanized yet</span>
+                      {% else %}
+                      <span class="badge badge-info">Doing</span>
+                      {% endif %}
                     </td>
                     <td class="project-actions text-right">
-                      <a class="btn btn-primary btn-sm" href="{% url 'goal_detail' goal.id %}">
+                      <a class="btn btn-primary btn-sm" href="{% url 'goal_detail' child.id %}">
                         <i class="fas fa-folder"></i>
                         View
                       </a>
@@ -109,72 +147,72 @@ Goals | {{ goal.title }}
               </tbody>
             </table>
           </div>
-
-         
           <!-- /.card-body -->
         </div>
-        <div class="card col-12">
-          <div class="card-header">
-            <h3> Daily Tasks </h3>
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse"><i class="fas fa-minus"></i></button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove"><i class="fas fa-times"></i></button>
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <table class="table table-striped projects">
-              <thead>
-                <tr>
-                  <th style="width: 1%">#</th>
-                  <th style="width: 20%">Goal Name</th>
-                  <th>Goal Progress</th>
-                  <th style="width: 8%" class="text-center">Status</th>
-                  <th style="width: 20%"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for daily_task in goal.dailytask_set.all %}
-                  <tr>
-                    <td>#</td>
-                    <td>{{ daily_task.title }}</td>
-                    <td class="project_progress">
-                      <div class="progress progress-sm">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100" style="width: 7%"></div>
-                      </div>
-                      <small>57% Complete</small>
-                    </td>
-                    <td class="project-state">
-                      <span class="badge badge-success">Success</span>
-                    </td>
-                    <td class="project-actions text-right">
-                      <a class="btn btn-primary btn-sm" href="#">
-                        <i class="fas fa-folder"></i>
-                        View
-                      </a>
-                      <a class="btn btn-info btn-sm" href="#">
-                        <i class="fas fa-pencil-alt"></i>
-                        Edit
-                      </a>
-                      <a class="btn btn-danger btn-sm" href="#">
-                        <i class="fas fa-trash"></i>
-                        Delete
-                      </a>
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-
-          <p>
-            Add <a href="#">new Task</a>
-          </p>
-          <!-- /.card-body -->
-        </div>
+        {% endif %}
         <!-- /.card -->
       </div>
       <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
   </section>
+  
+ 
 {% endblock %}
+
+
+{% block script %}
+<script src="{% static 'plugins/sweetalert2/sweetalert2.min.js'%}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+<script>
+  
+  $(document).ready(function() {
+      $('#mySwitch').bootstrapSwitch();
+      $('input[name="mySwitch"]').on('switchChange.bootstrapSwitch', function(event, state) {
+       
+        function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+        const goalId = $(this).data('goal-id');
+        const csrftoken = getCookie('csrftoken'); 
+        $.ajax({
+            type: 'POST',
+            url: '/update_goal_status/',  
+            headers: { 'X-CSRFToken': csrftoken },
+            data: { goal_id: goalId, is_complete: state },
+            success: function(response) {
+              $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Status Changed',
+                subtitle: ':)',
+                body: response.message
+              })
+
+            },
+            error: function(error) {
+              $(document).Toasts('create', {
+                class: 'bg-danger',
+                title: 'Status not Changed',
+                subtitle: ':(',
+                body: response.message
+              })
+            }
+        });
+    });
+  });
+</script>
+{% endblock  %}

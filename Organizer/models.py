@@ -27,19 +27,10 @@ class Goal(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     title = models.CharField( max_length=90)
     description = models.TextField()
+    is_complete = models.BooleanField( default=False)
     def __str__(self):
         return self.title
     
     class Meta:
         app_label = "Organizer"         
         
-class DailyTask(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE , default=1)
-    goal =  models.ForeignKey(Goal, on_delete=models.CASCADE,blank=True)   
-    title = models.CharField( max_length=90)
-    description = models.TextField()
-    def __str__(self):
-        return self.title
-    
-    class Meta:
-        app_label = "Organizer"                
